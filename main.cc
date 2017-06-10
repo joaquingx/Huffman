@@ -1,43 +1,68 @@
 #include <bits/stdc++.h>
+// #include "auxiliar.h"
+#include "huffman.h"
 using namespace std;
-#define MAXN 255
+#define MAXN 256
 int freq[MAXN];
-vector< vector < int > > oraciones;
+vector< vector < int > > toMemory;
+typedef unsigned char uchar;
 
 
-struct huffmanTree{
-  struct node{
-    int freq;
-    node * childs[2];
-    char letter;
-    bool isTerminal;
-    node(int freq, char letter)
-      {
-        this->freq = freq;
-        this->letter = letter;
-        this->isTerminal = true;
-      }
-  };
-  node * root;
-  void merge(node * a , node * b);
-  void getAllLetters();
+struct nodeCompare{
+  bool operator() (const node * a , const node * b)
+  {
+    return a->freq < b->freq;
+  }
 };
 
+typedef set< node * , nodeCompare >  huffmanQueue;
+huffmanQueue nodeQueue;
 
 void getFrequencies()
 {
   for(int i = 0 ;i < MAXN ; ++i)
     if(freq[i] > 0)
-      cout << char(i) << ":" << freq[i] << "\n";
+      cout << uchar(i) << ":" << freq[i] << "\n";
+}
+void setNodesQueue(huffmanQueue & S)
+{
+  node * aux;
+  for(int  i = 0 ; i < MAXN ; ++i)
+    {
+      if(freq[i] > 0)
+        {
+          aux = new node (freq[i],uchar(i),true);
+          S.insert(aux);
+        }
+    }
 }
 
-int main()
+node * buildingTree(huffmanQueue & S)
 {
-  char path[100];
-  strcpy(path,"facil.txt");
-  int nOraciones=0;
+  while(S.size() > 1)
+    {
+      node * first = (*S.begin());
+      S.erase(S.begin());
+      node * second = (*S.begin());
+      S.erase(S.begin());
+      node * fusion = merge(first,second);
+      S.insert(fusion);
+    }
+  return (*S.begin());
+}
+
+int main(int argc, char * argv[])
+{
+  char path[100],buffer[100];
+  if(argv[1] == NULL)
+    {
+      cout << "Usage:  ./executable [path]";
+      cout << "\n";
+      return 0;
+    }
+  strcpy(path,argv[1]);
+  int nToMemory=0;
   FILE * pFile ;
-  char buffer[100];
   memset(freq , 0 , sizeof freq);
   pFile = fopen(path, "r");
   if(pFile == NULL ) perror("Error opening file\n");
@@ -46,22 +71,30 @@ int main()
       while ( ! feof (pFile) )
         {
           if ( fgets (buffer , 100 , pFile) == NULL ) break;
-          ++nOraciones;
+          ++nToMemory;
         }
       pFile = fopen(path, "r");// Para regresar de EOF
-      oraciones.resize(nOraciones);
+      toMemory.resize(nToMemory);
       for(int i = 0 ; !feof(pFile) ; ++i)
         {
           memset(buffer,0,sizeof buffer);
           if ( fgets (buffer , 100 , pFile) == NULL ) break;
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
-              oraciones[i].push_back(j);
+              toMemory[i].push_back(j);
               ++freq[int(buffer[j])];
             }
         }
       fclose (pFile);
     }
+#ifdef DEBUG
   getFrequencies();
+#endif
+  setNodesQueue(nodeQueue);
+  node * root = buildingTree(nodeQueue);
+  vector<uchar> encoding = getTree(root);
+  // completeByte(encoding); // debo hcaerlo dentro de huffman alparecer!
+  encoding.push_back(' ');
+
   return 0;
 }

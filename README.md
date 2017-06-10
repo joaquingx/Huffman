@@ -1,2 +1,1 @@
 # Huffman-Compression
-# Huffman-Compression
