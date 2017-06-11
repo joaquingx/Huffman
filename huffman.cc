@@ -2,6 +2,8 @@
 #include "huffman.h"
 #include <vector>
 #include <map>
+#include <iostream>
+using namespace std;
 typedef unsigned char uchar;
 
 node::node(int freq, uchar letter , bool isTerminal)
@@ -9,7 +11,8 @@ node::node(int freq, uchar letter , bool isTerminal)
   this->freq = freq;
   this->letter = letter;
   this->isTerminal = isTerminal;
-
+  childs[0] = 0;
+  childs[1] = 0;
 }
 
 node::~node()
@@ -26,28 +29,53 @@ node * merge(node *& a , node *& b)
   return c;
 }
 
-map<char, string> getEncoding(node * root,vector<uchar> & s,vector<uchar> v)
+map<char, string> getEncoding(node * root)
 {
   map<char,string> mapa;
-  getEncodingR(root,s,v,mapa,0);
+  getEncodingR(root,0,mapa);
+  return mapa;
 }
-string actual;
-void getEncodingR(node * root, vector<uchar> & s , vector<uchar> v , map<char,string> & mapa, uchar lado)
+int cnt = 0;
+string actual="00000000000000000000000000000000000000000000000000";
+void getEncodingR(node * root , node * parent , map<char,string> & mapa)
 {
+  //creo que siempre es full
   if(root != 0)
     {
-      if(lado  == '0' or lado == '1')
-        actual += lado;
-      getEncodingR(root->childs[0],s,v,mapa,'0');
-      getEncodingR(root->childs[1],s,v,mapa,'1');
+      if(parent != 0)
+        if(parent->childs[0] == root)
+          actual[cnt++] = '0';
+        else
+          actual[cnt++] = '1';
+      if(root->isTerminal) mapa[root->letter] = actual.substr(0,cnt);
+      getEncodingR(root->childs[0],root,mapa);
+      if(root->childs[0] != 0)
+        --cnt;
+      getEncodingR(root->childs[1],root,mapa);
+      if(root->childs[1] != 0)
+        --cnt;
     }
 
 }
 
+void traversalTree(node * root)
+{
+  if(root != 0)
+    {
+      // cout << root->freq << " ";
+      if(root->isTerminal)
+        cout << int(root->letter);
+      cout << "\n";
+      traversalTree(root->childs[0]);
+      traversalTree(root->childs[1]);
+    }
+}
 vector<uchar> getTree(node * root)
 {
   vector<uchar> compressTree;
   getTreeR(root,compressTree);
+  completeByte(compressTree);
+  return compressTree;
 }
 
 
@@ -59,6 +87,7 @@ void getTreeR(node * root, vector<uchar> & s)
         writeBit(0,s);
       else
         {
+          cout << bitCount << "\n";
           writeBit(1,s);
           writeByte(root->letter,s);
         }
@@ -66,4 +95,5 @@ void getTreeR(node * root, vector<uchar> & s)
       getTreeR(root->childs[1],s);
     }
 }
+
 

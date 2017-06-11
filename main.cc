@@ -11,7 +11,10 @@ typedef unsigned char uchar;
 struct nodeCompare{
   bool operator() (const node * a , const node * b)
   {
-    return a->freq < b->freq;
+    if(a->freq != b->freq)
+      return a->freq < b->freq;
+    else
+      return a < b;
   }
 };
 
@@ -39,6 +42,12 @@ void setNodesQueue(huffmanQueue & S)
 
 node * buildingTree(huffmanQueue & S)
 {
+#ifdef DEBUG
+  cout << "Orden de los nodos\n";
+  for(auto it = S.begin(); it != S.end() ; ++it)
+    cout << (*it)->letter << " ";
+  cout << "\n";
+#endif
   while(S.size() > 1)
     {
       node * first = (*S.begin());
@@ -92,9 +101,20 @@ int main(int argc, char * argv[])
 #endif
   setNodesQueue(nodeQueue);
   node * root = buildingTree(nodeQueue);
+  // cout << root->childs[0] << " " << root->childs[1] << "\n";
+  cout << "Traversal del Huffman:\n";
+  traversalTree(root);
   vector<uchar> encoding = getTree(root);
+#ifdef DEBUG
+  cout << "Encoding del Arbol:\n";
+  for(int i = 0 ;i < encoding.size() ; ++i)
+    cout << int(encoding[i]) << "\n";
+  cout << "Fin Encoding\n";
+#endif
   // completeByte(encoding); // debo hcaerlo dentro de huffman alparecer!
-  encoding.push_back(' ');
-
+  // encoding.push_back(' ');
+  // map<char, string>  tabla = getEncoding(root);
+  // for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
+  //   cout << (it->first) << " " << (it->second) << "\n";
   return 0;
 }
