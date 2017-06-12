@@ -1,5 +1,4 @@
-#include <vector>
-#include <iostream>
+#include <bits/stdc++.h>
 #include "auxiliar.h"
 using namespace std;
 typedef unsigned char uchar;
@@ -65,13 +64,45 @@ void printBitxBit(vector<uchar> & s)
   cout << "\n";
 }
 
-void saveCompression(vector<uchar> & s)
+void saveCompression(vector<uchar> & s, char * dest)
 {
   FILE * saveFile;
-  saveFile = fopen("compreso.txt","w");
+  saveFile = fopen(dest,"w");
   for(int i = 0 ;i < s.size() ; ++i)
     {
       fputc(s[i],saveFile);
     }
   fclose(saveFile);
+}
+
+void openFile(vector< vector<int> > & s, int * freq , char * path)
+{
+  char buffer[100];
+  int nToMemory=0;
+  FILE * pFile ;
+  memset(freq , 0 , sizeof freq);
+  pFile = fopen(path, "r");
+  if(pFile == NULL ) perror("Error opening file\n");
+  else
+    {
+      while ( ! feof (pFile) )
+        {
+          if ( fgets (buffer , 100 , pFile) == NULL ) break;
+          ++nToMemory;
+        }
+      pFile = fopen(path, "r");// Para regresar de EOF
+      s.resize(nToMemory);
+      for(int i = 0 ; !feof(pFile) ; ++i)
+        {
+          memset(buffer,0,sizeof buffer);
+          if ( fgets (buffer , 100 , pFile) == NULL ) break;
+          for(int j = 0 ; buffer[j] != 0 ; ++j)
+            {
+              // cout << int(buffer[j]) << "\n" ;
+              s[i].push_back(buffer[j]);
+              ++freq[int(buffer[j])];
+            }
+        }
+      fclose (pFile);
+    }
 }

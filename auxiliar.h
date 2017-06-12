@@ -9,5 +9,6 @@ void writeBit(int bit, vector<uchar> & s);
 void writeByte(uchar c, vector<uchar> & s);
 void completeByte(vector<uchar> &s);
 void printBitxBit(vector<uchar> & s);
-void saveCompression(vector<uchar> & s);
+void saveCompression(vector<uchar> & s, char * dest);
+void openFile(vector< vector<int> > & s, int *freq , char * path);
 #endif
