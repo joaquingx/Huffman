@@ -1,12 +1,11 @@
 #include <bits/stdc++.h>
-// #include "auxiliar.h"
+ #include "auxiliar.h"
 #include "huffman.h"
 using namespace std;
 #define MAXN 256
 int freq[MAXN];
 vector< vector < int > > toMemory;
 typedef unsigned char uchar;
-
 
 struct nodeCompare{
   bool operator() (const node * a , const node * b)
@@ -90,7 +89,8 @@ int main(int argc, char * argv[])
           if ( fgets (buffer , 100 , pFile) == NULL ) break;
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
-              toMemory[i].push_back(j);
+              // cout << int(buffer[j]) << "\n" ;
+              toMemory[i].push_back(buffer[j]);
               ++freq[int(buffer[j])];
             }
         }
@@ -108,13 +108,26 @@ int main(int argc, char * argv[])
 #ifdef DEBUG
   cout << "Encoding del Arbol:\n";
   for(int i = 0 ;i < encoding.size() ; ++i)
-    cout << int(encoding[i]) << "\n";
+    cout << encoding[i] << "\n";
   cout << "Fin Encoding\n";
+  printBitxBit(encoding);
 #endif
-  // completeByte(encoding); // debo hcaerlo dentro de huffman alparecer!
-  // encoding.push_back(' ');
-  // map<char, string>  tabla = getEncoding(root);
-  // for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
-  //   cout << (it->first) << " " << (it->second) << "\n";
+  encoding.push_back(' ');
+  map<char, string>  tabla = getEncoding(root);
+#ifdef DEBUG
+  for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
+    cout << (it->first) << ":" << (it->second) << "\n";
+  for(int i = 0 ;i < toMemory.size() ; ++i)
+    for(int j = 0 ; j < toMemory[i].size() ; ++j)
+      {
+        cout << char(toMemory[i][j]) << " ";
+        string k = tabla[char(toMemory[i][j])];
+        for(int l = 0 ; l < k.size() ; ++l)
+          writeBit(int(k[l]-'0'),encoding);
+      }
+  cout << "\n";
+#endif
+  completeByte(encoding);
+  saveCompression(encoding);
   return 0;
 }

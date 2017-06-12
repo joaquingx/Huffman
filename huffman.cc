@@ -62,7 +62,7 @@ void traversalTree(node * root)
 {
   if(root != 0)
     {
-      // cout << root->freq << " ";
+      cout << root->freq << " ";
       if(root->isTerminal)
         cout << int(root->letter);
       cout << "\n";
@@ -87,7 +87,7 @@ void getTreeR(node * root, vector<uchar> & s)
         writeBit(0,s);
       else
         {
-          cout << bitCount << "\n";
+          // cout << bitCount << "\n";
           writeBit(1,s);
           writeByte(root->letter,s);
         }
