@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include "auxiliar.h"
-#include "huffman.h"
+#include "Utils/auxiliar.h"
+#include "Utils/huffman.h"
 using namespace std;
 #define MAXN 256
 int freq[MAXN];
@@ -108,9 +108,6 @@ int main(int argc, char * argv[])
       cout << "Impresion en Binario de Compresion:\n";
       printBitxBit(encoding);
 #endif
-      for(int i = 0 ; i < encoding.size() ; ++i)
-        cout << int(encoding[i]) << " ";
-      cout << "\n";
     }
   if(strcmp("-d",argv[1]) == 0)
     {
@@ -121,17 +118,14 @@ int main(int argc, char * argv[])
       cout << "Traversal del Huffman:\n";
       traversalTree(root);
 #endif
-//       map<uchar,string> tabla = getEncoding(root);
-// #ifdef DEBUG
-//       for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
-//         cout << (it->first) << ":" << (it->second) << "\n";
-// #endif
-//       map<string,uchar> nTabla = inverseTable(tabla);
-//       vector<uchar> decoding = decodingText(toMemory,nTabla,offset);
-//       saveCompression(decoding,argv[3]);
-//       for(int i = 0 ;i < decoding.size() ; ++i)
-//         cout << decoding[i];
-//       cout << "\n";
+      map<uchar,string> tabla = getEncoding(root);
+#ifdef DEBUG
+      for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
+        cout << (it->first) << ":" << (it->second) << "\n";
+#endif
+      map<string,uchar> nTabla = inverseTable(tabla);
+      vector<uchar> decoding = decodingText(toMemory,nTabla,offset+1);
+      saveCompression(decoding,argv[3]);
     }
   return 0;
 }
