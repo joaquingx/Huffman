@@ -19,8 +19,8 @@ node::node(int freq, uchar letter , bool isTerminal)
 
 node::~node()
 {
-  delete childs[0];
-  delete childs[1];
+  // delete childs[0];
+  // delete childs[1];
 }
 
 node * merge(node *& a , node *& b)

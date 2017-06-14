@@ -63,7 +63,7 @@ int main(int argc, char * argv[])
 {
   if(argv[1] == NULL or argv[2] == NULL or argv[3] == NULL)
     {
-      cout << "Usage:  ./executable  [-c/-d] [Origin file path] [Dest file path]\n";
+      cout << "Usage:  ./Huffman  [-c/-d] [Origin file path] [Dest file path]\n";
       cout << "-c : compress\n";
       cout << "-d : decompress\n";
       return 0;
