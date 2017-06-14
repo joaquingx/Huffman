@@ -2,6 +2,7 @@
 #define AUXILIAR_H
 #include <vector>
 #include <iostream>
+#include <map>
 using namespace std;
 typedef unsigned char uchar;
 void writeArray(vector<uchar> & s);
@@ -10,5 +11,8 @@ void writeByte(uchar c, vector<uchar> & s);
 void completeByte(vector<uchar> &s);
 void printBitxBit(vector<uchar> & s);
 void saveCompression(vector<uchar> & s, char * dest);
-void openFile(vector< vector<int> > & s, int *freq , char * path);
+void openFileCompression(vector< uchar > & s, int *freq , char * path);
+void openFileDecompression(vector< uchar > & s, char * path);
+int readBit(int offset, uchar & c);
+map<string,uchar> inverseTable(map<uchar,string> s);
 #endif

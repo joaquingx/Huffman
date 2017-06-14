@@ -4,7 +4,7 @@
 using namespace std;
 #define MAXN 256
 int freq[MAXN];
-vector< vector < int > > toMemory;
+vector <uchar> toMemory;
 typedef unsigned char uchar;
 
 struct nodeCompare{
@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
     }
   if(strcmp("-c",argv[1]) == 0)
     {
-      openFile(toMemory,freq,argv[2]);
+      openFileCompression(toMemory,freq,argv[2]);
 #ifdef DEBUG
       getFrequencies();
 #endif
@@ -89,21 +89,49 @@ int main(int argc, char * argv[])
       cout << "Fin Encoding\n";
       printBitxBit(encoding);
 #endif
+      completeByte(encoding);
       encoding.push_back(' ');
-      map<char, string>  tabla = getEncoding(root);
+      map<uchar, string>  tabla = getEncoding(root);
 #ifdef DEBUG
       for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
         cout << (it->first) << ":" << (it->second) << "\n";
 #endif
       for(int i = 0 ;i < toMemory.size() ; ++i)
-        for(int j = 0 ; j < toMemory[i].size() ; ++j)
-          {
-            string k = tabla[char(toMemory[i][j])];
-            for(int l = 0 ; l < k.size() ; ++l)
-              writeBit(int(k[l]-'0'),encoding);
-          }
+        {
+          string k = tabla[toMemory[i]];
+          for(int l = 0 ; l < k.size() ; ++l)
+            writeBit(int(k[l]-'0'),encoding);
+        }
       completeByte(encoding);
       saveCompression(encoding,argv[3]);
+#ifdef DEBUG
+      cout << "Impresion en Binario de Compresion:\n";
+      printBitxBit(encoding);
+#endif
+      for(int i = 0 ; i < encoding.size() ; ++i)
+        cout << int(encoding[i]) << " ";
+      cout << "\n";
+    }
+  if(strcmp("-d",argv[1]) == 0)
+    {
+      int offset=0;
+      openFileDecompression(toMemory,argv[2]);
+      node * root = decodingTree(toMemory, offset);
+#ifdef DEBUG
+      cout << "Traversal del Huffman:\n";
+      traversalTree(root);
+#endif
+//       map<uchar,string> tabla = getEncoding(root);
+// #ifdef DEBUG
+//       for(auto it = tabla.begin() ; it != tabla.end() ; ++it)
+//         cout << (it->first) << ":" << (it->second) << "\n";
+// #endif
+//       map<string,uchar> nTabla = inverseTable(tabla);
+//       vector<uchar> decoding = decodingText(toMemory,nTabla,offset);
+//       saveCompression(decoding,argv[3]);
+//       for(int i = 0 ;i < decoding.size() ; ++i)
+//         cout << decoding[i];
+//       cout << "\n";
     }
   return 0;
 }

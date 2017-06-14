@@ -21,9 +21,14 @@ void writeBit(int bit, vector<uchar> & s)
   writeArray(s);
 }
 
+int readBit(int offset, uchar & c)
+{
+  return (( c>>offset ) & 1);
+}
+
 void writeByte(uchar c, vector<uchar> & s)
 {
-  unsigned char nuevo = 0;
+  uchar nuevo = 0;
   int nuevoCount=0;
   /* cout << "Que ya no quiero ni follar que estoy cansao : "<<int(c) << "\n"; */
   while(int(c) > 0)
@@ -75,34 +80,56 @@ void saveCompression(vector<uchar> & s, char * dest)
   fclose(saveFile);
 }
 
-void openFile(vector< vector<int> > & s, int * freq , char * path)
+void openFileCompression(vector< uchar > & s, int *freq , char * path)
 {
   char buffer[100];
-  int nToMemory=0;
   FILE * pFile ;
   memset(freq , 0 , sizeof freq);
   pFile = fopen(path, "r");
   if(pFile == NULL ) perror("Error opening file\n");
   else
     {
-      while ( ! feof (pFile) )
-        {
-          if ( fgets (buffer , 100 , pFile) == NULL ) break;
-          ++nToMemory;
-        }
-      pFile = fopen(path, "r");// Para regresar de EOF
-      s.resize(nToMemory);
       for(int i = 0 ; !feof(pFile) ; ++i)
         {
           memset(buffer,0,sizeof buffer);
           if ( fgets (buffer , 100 , pFile) == NULL ) break;
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
-              // cout << int(buffer[j]) << "\n" ;
-              s[i].push_back(buffer[j]);
+              s.push_back(uchar(buffer[j]));
               ++freq[int(buffer[j])];
             }
         }
       fclose (pFile);
     }
+}
+
+void openFileDecompression(vector< uchar > & s, char * path)
+{
+  char buffer[100];
+  FILE * pFile ;
+  pFile = fopen(path, "r");
+  if(pFile == NULL ) perror("Error opening file\n");
+  else
+    {
+      for(int i = 0 ; !feof(pFile) ; ++i)
+        {
+          memset(buffer,0,sizeof buffer);
+          if ( fgets (buffer , 100 , pFile) == NULL ) break;
+          for(int j = 0 ; buffer[j] != 0 ; ++j)
+            {
+              s.push_back(uchar(buffer[j]));
+            }
+        }
+      fclose (pFile);
+    }
+}
+
+map<string,uchar> inverseTable(map<uchar,string> s)
+{
+  map<string,uchar> nuevo;
+  for(auto it = s.begin() ; it != s.end() ; ++it)
+    {
+      nuevo[it->second] = it->first;
+    }
+  return nuevo;
 }

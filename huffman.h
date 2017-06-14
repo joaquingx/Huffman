@@ -17,8 +17,9 @@ node * merge(node *& a , node *& b);
 vector<uchar> getTree(node * root);
 void getTreeR(node * root, vector<uchar> &s);
 void setTree();
-map<char, string> getEncoding(node * root);
-void getEncodingR(node * root , node * parent , map<char,string> & mapa);
+map<uchar, string> getEncoding(node * root);
+void getEncodingR(node * root , node * parent , map<uchar,string> & mapa);
 void traversalTree(node * root);
-
+node * decodingTree( vector<uchar> & s, int &offset);
+vector<uchar> decodingText(vector<uchar> & s, map<string,uchar> tabla, int offset);
 #endif
