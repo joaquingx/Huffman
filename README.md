@@ -1,6 +1,7 @@
 # Huffman Encoding and Decoding
 ![Bugs](https://img.shields.io/badge/Bugs-Present-red.svg)
 
+An implementation in C++ that use the [Huffman Algorithm](https://en.wikipedia.org/wiki/Huffman_coding) for compress and decompress only for **ASCII TEXTS**.
 ### How to build
 ```sh
   $ git clone https://github.com/joaquingx/Huffman-Encoding-Decoding.git
@@ -16,7 +17,7 @@
 ```sh
   $ ./Huffman [-c/-d] [Origin Path] [Dest Path]
 ```
-Use -c for compression and -d for decompression. 
+Use *-c* for compression and *-d* for decompression. 
 
 
 
