@@ -41,12 +41,6 @@ void setNodesQueue(huffmanQueue & S)
 
 node * buildingTree(huffmanQueue & S)
 {
-// #ifdef DEBUG
-//   cout << "Orden de los nodos\n";
-//   for(auto it = S.begin(); it != S.end() ; ++it)
-//     cout << (*it)->letter << " ";
-//   cout << "\n";
-// #endif
   while(S.size() > 1)
     {
       node * first = (*S.begin());
@@ -61,38 +55,34 @@ node * buildingTree(huffmanQueue & S)
 
 int main(int argc, char * argv[])
 {
-  if(argv[1] == NULL or argv[2] == NULL or argv[3] == NULL)
+  map<uchar, string>  tabla;
+  char ** options;
+  if(!getOptions(options , argv))
+    return 0;
+  if(strcmp("-c",options[0]) == 0)
     {
-      cout << "Usage:  ./Huffman  [-c/-d] [Origin file path] [Dest file path]\n";
-      cout << "-c : compress\n";
-      cout << "-d : decompress\n";
-      return 0;
-    }
-  if(strcmp("-c",argv[1]) == 0)
-    {
-      openFileCompression(toMemory,freq,argv[2]);
+      openFileCompression(toMemory,freq,options[1]);
       setNodesQueue(nodeQueue);
       node * root = buildingTree(nodeQueue);
       vector<uchar> encoding = getTree(root);
       completeByte(encoding);
       writeByte(uchar(SEPARATOR),encoding);
-      // encoding.push_back(uchar(SEPARATOR));
-      map<uchar, string>  tabla = getEncoding(root);
+      tabla = getEncoding(root);
       setEncodingToText(toMemory ,tabla, encoding);
       completeByte(encoding);
-      saveCompression(encoding,argv[3]);
-      printTable(tabla);
+      saveCompression(encoding,options[2]);
     }
-  if(strcmp("-d",argv[1]) == 0)
+  if(strcmp("-d",options[0]) == 0)
     {
       int offset=0;
-      openFileDecompression(toMemory,argv[2]);
+      openFileDecompression(toMemory,options[1]);
       node * root = decodingTree(toMemory, offset);
-      map<uchar,string> tabla = getEncoding(root);
+      tabla = getEncoding(root);
       map<string,uchar> nTabla = inverseTable(tabla);
       vector<uchar> decoding = decodingText(toMemory,nTabla,offset+1);
-      printTable(tabla);
-      saveCompression(decoding,argv[3]);
+      saveCompression(decoding,options[2]);
     }
+  if(argv[4] != NULL and (strcmp("-v",argv[4])==0))
+    printTable(tabla);
   return 0;
 }

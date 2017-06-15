@@ -16,4 +16,6 @@ void openFileDecompression(vector< uchar > & s, char * path);
 int readBit(int offset, uchar & c);
 map<string,uchar> inverseTable(map<uchar,string> s);
 void printTable(map<uchar, string> mapa);
+bool getOptions(char **& options , char * argv[]);
+void printInMemory(vector<uchar> & toMemory);
 #endif

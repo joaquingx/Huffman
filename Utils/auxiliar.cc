@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "auxiliar.h"
-#define MAXN 1000
+#define MAXN 10000
 using namespace std;
 typedef unsigned char uchar;
 uchar acc = 0;
@@ -24,14 +24,13 @@ void writeBit(int bit, vector<uchar> & s)
 
 int readBit(int offset, uchar & c)
 {
-  return (( c>>offset ) & 1);
+  return ((c>>offset ) & 1);
 }
 
 void writeByte(uchar c, vector<uchar> & s)
 {
   uchar nuevo = 0;
   int nuevoCount=0;
-  /* cout << "Que ya no quiero ni follar que estoy cansao : "<<int(c) << "\n"; */
   while(int(c) > 0)
     {
       if(c % 2 ==0)
@@ -98,7 +97,7 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
               s.push_back(uchar(buffer[j]));
-              ++freq[int(buffer[j])];
+              ++freq[int(uchar(buffer[j]))];
             }
         }
       fclose (pFile);
@@ -109,20 +108,19 @@ void openFileDecompression(vector< uchar > & s, char * path)
 {
   char buffer[MAXN];
   FILE * pFile ;
-  pFile = fopen(path, "r");
+  pFile = fopen("compress.txt", "rb");
   if(pFile == NULL ) perror("Error opening file\n");
   else
     {
-      for(int i = 0 ; !feof(pFile) ; ++i)
+      while(1)
         {
-          memset(buffer,0,sizeof buffer);
-          if ( fgets (buffer , MAXN , pFile) == NULL ) break;
-          for(int j = 0 ; buffer[j] != 0 ; ++j)
-            {
-              s.push_back(uchar(buffer[j]));
-            }
+          int x = getc(pFile);
+          if(x != -1)
+            s.push_back(uchar(x));
+          else
+            break;
         }
-      fclose (pFile);
+      fclose(pFile);
     }
 }
 
@@ -151,7 +149,48 @@ void verboseMap()
 void printTable(map<uchar, string> mapa)
 {
   verboseMap();
-  cout << "Tabla de conversion : \n";
+  cout << "Conversion Table: \n";
   for(auto it = mapa.begin() ; it != mapa.end() ; ++it)
     cout << vMap[(it->first)] << ":" << (it->second) << "\n";
+}
+
+bool getOptions(char **& options , char * argv[])
+{
+  options = (char **)malloc(3*sizeof(char*));
+  options[0] = (char *)malloc(100 * sizeof(char));
+  options[1] = (char *)malloc(100 * sizeof(char));
+  options[2] = (char *)malloc(100 * sizeof(char));
+  if(argv[3] != NULL and argv[2] != NULL and argv[1] != NULL)
+    {
+      for(int i = 0 ;i < 3 ; ++i)
+        {
+          strcpy(options[i],argv[i+1]);
+        }
+    }
+  else if(argv[3]== NULL and argv[2] != NULL and argv[1] != NULL)
+    {
+      if(strcmp(argv[1],"-c") == 0)
+        strcpy(options[2],"compress.txt");
+      else
+        strcpy(options[2],"decompress.txt");
+      for(int i = 0 ;i < 2 ; ++i)
+        {
+          strcpy(options[i],argv[i+1]);
+        }
+    }
+  else if(argv[1] == NULL or argv[2] == NULL or argv[3] == NULL)
+    {
+      cout << "Usage:  ./Huffman  -c|-d input-file [output-file]\n";
+      cout << "-c : compress\n";
+      cout << "-d : decompress\n";
+      return 0;
+    }
+  return 1;
+}
+
+void printInMemory(vector<uchar> & toMemory)
+{
+  cout << "In Memory:\n";
+  for(int i = 0 ;i < toMemory.size() ; ++i)
+    cout << toMemory[i] << " ";
 }
