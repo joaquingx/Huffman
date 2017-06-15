@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include "auxiliar.h"
+#define MAXN 1000
 using namespace std;
 typedef unsigned char uchar;
 uchar acc = 0;
@@ -55,7 +56,7 @@ void completeByte(vector<uchar> &s)
 {
   while(bitCount != 7)
     {
-      writeBit(0,s);
+      writeBit(1,s);
     }
 }
 
@@ -75,6 +76,7 @@ void saveCompression(vector<uchar> & s, char * dest)
   saveFile = fopen(dest,"w");
   for(int i = 0 ;i < s.size() ; ++i)
     {
+      // cout << int(s[i]) << " ";
       fputc(s[i],saveFile);
     }
   fclose(saveFile);
@@ -82,7 +84,7 @@ void saveCompression(vector<uchar> & s, char * dest)
 
 void openFileCompression(vector< uchar > & s, int *freq , char * path)
 {
-  char buffer[100];
+  char buffer[MAXN];
   FILE * pFile ;
   memset(freq , 0 , sizeof freq);
   pFile = fopen(path, "r");
@@ -92,7 +94,7 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
       for(int i = 0 ; !feof(pFile) ; ++i)
         {
           memset(buffer,0,sizeof buffer);
-          if ( fgets (buffer , 100 , pFile) == NULL ) break;
+          if ( fgets (buffer , MAXN , pFile) == NULL ) break;
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
               s.push_back(uchar(buffer[j]));
@@ -105,7 +107,7 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
 
 void openFileDecompression(vector< uchar > & s, char * path)
 {
-  char buffer[100];
+  char buffer[MAXN];
   FILE * pFile ;
   pFile = fopen(path, "r");
   if(pFile == NULL ) perror("Error opening file\n");
@@ -114,7 +116,7 @@ void openFileDecompression(vector< uchar > & s, char * path)
       for(int i = 0 ; !feof(pFile) ; ++i)
         {
           memset(buffer,0,sizeof buffer);
-          if ( fgets (buffer , 100 , pFile) == NULL ) break;
+          if ( fgets (buffer , MAXN , pFile) == NULL ) break;
           for(int j = 0 ; buffer[j] != 0 ; ++j)
             {
               s.push_back(uchar(buffer[j]));
@@ -132,4 +134,24 @@ map<string,uchar> inverseTable(map<uchar,string> s)
       nuevo[it->second] = it->first;
     }
   return nuevo;
+}
+
+map<uchar,string> vMap;
+void verboseMap()
+{
+  for(int i = 0 ; i <= 255 ; ++i)
+    {
+      vMap[uchar(i)] += "0x";
+      vMap[uchar(i)] += uchar(i);
+    }
+  vMap[uchar(10)] = "ENT";
+  vMap[uchar(32)] = "SPC";
+}
+
+void printTable(map<uchar, string> mapa)
+{
+  verboseMap();
+  cout << "Tabla de conversion : \n";
+  for(auto it = mapa.begin() ; it != mapa.end() ; ++it)
+    cout << vMap[(it->first)] << ":" << (it->second) << "\n";
 }

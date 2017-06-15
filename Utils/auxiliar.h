@@ -15,4 +15,5 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path);
 void openFileDecompression(vector< uchar > & s, char * path);
 int readBit(int offset, uchar & c);
 map<string,uchar> inverseTable(map<uchar,string> s);
+void printTable(map<uchar, string> mapa);
 #endif

@@ -3,8 +3,6 @@
 #include <vector>
 #include <map>
 #include <iostream>
-#define SEPARATOR 32
-#define SBYTE 8
 using namespace std;
 typedef unsigned char uchar;
 
@@ -41,8 +39,6 @@ int cnt = 0;
 string actualString="00000000000000000000000000000000000000000000000000";
 void getEncodingR(node * root , node * parent , map<uchar,string> & mapa)
 {
-  //creo que siempre es full
-  // cout << cnt << " ";
   if(root != NULL)
     {
       // cout << root->isTerminal << "\n";
@@ -84,7 +80,6 @@ vector<uchar> getTree(node * root)
 {
   vector<uchar> compressTree;
   getTreeR(root,compressTree);
-  completeByte(compressTree);
   return compressTree;
 }
 
@@ -113,36 +108,30 @@ void pushLetter(node *& actual, uchar c)
 
 void generatingTree(node *& actual, map<node * , node * > & parent, map<node * , int > &mapa, bool isTerminal)
 {
-  // cout << "-------------------------\n";
   int cnt = 0;
   while(actual->isTerminal)
     {
-      // cout << actual<< " " << parent[actual] << "--" << "\n";
       if(cnt == 10)
         break;
       ++cnt;
       actual = parent[actual];
     }
-  // cout << "ahora soy : " << actual << "\n";
   if(mapa.count(actual))
     {
       while(mapa[actual] == 2)
         actual = parent[actual];
       if(actual == 0)
         {
-          // cout << "chaval\n";
           return;
         }
     }
   node * nuevo = new node(0,0,isTerminal);
   if(!mapa.count(actual))
     {
-      // cout << "con 0\n";
       actual->childs[0] = nuevo;
       mapa[actual] = 1;
       parent[actual->childs[0]] = actual;
       actual = actual->childs[0];
-      // cout << "entre a izquierda\n";
     }
   else if(mapa[actual] == 1)
     {
@@ -160,14 +149,14 @@ void generatingTree(node *& actual, map<node * , node * > & parent, map<node * ,
 
 node * decodingTree( vector<uchar> & s, int &offset)
 {
-#ifdef DEBUG
-  cout << "Impresion de compresion de arbol:\n";
-  for(int i = 0 ; i < s.size() and int(s[i]) != SEPARATOR ; ++i)
-    {
-      cout << int(s[i]) << " ";
-    }
-  cout << "\n";
-#endif
+// #ifdef DEBUG
+//   cout << "Impresion de compresion de arbol:\n";
+//   for(int i = 0 ; i < s.size() and int(s[i]) != SEPARATOR ; ++i)
+//     {
+//       cout << int(s[i]) << " ";
+//     }
+//   cout << "\n";
+// #endif
   int cc=0;
   for(; cc < s.size() and int(s[cc]) != SEPARATOR ; ++cc);
   uchar nuevaLetra=0;
@@ -178,7 +167,6 @@ node * decodingTree( vector<uchar> & s, int &offset)
   map<node * , int> mapa;
   map<node * , node * > parent;
   parent[root] = 0;
-  // cout << totalSize << " el total size es\n";
   for(int i = 0; i < s.size() and int(s[i]) != SEPARATOR ; ++i)
     {
       offset=i;
@@ -219,7 +207,6 @@ node * decodingTree( vector<uchar> & s, int &offset)
 vector<uchar> decodingText(vector<uchar> & s, map<string,uchar> tabla, int offset)
 {
   vector<uchar> res;
-  // int cnt = 0;
   string act = "";
   for(int i = offset+1 ;i < s.size() ; ++i) // uno mas alla del espacio
     {
@@ -235,4 +222,16 @@ vector<uchar> decodingText(vector<uchar> & s, map<string,uchar> tabla, int offse
         }
     }
   return res;
+}
+
+void setEncodingToText(vector<uchar> & toMemory ,  map<uchar,string> & tabla, vector<uchar> & encoding)
+{
+  for(int i = 0 ;i < toMemory.size() ; ++i)
+  {
+    if(!tabla.count(toMemory[i]))
+      cout << "ptm\n";
+    string k = tabla[toMemory[i]];
+    for(int l = 0 ; l < k.size() ; ++l)
+      writeBit(int(k[l])-'0',encoding);
+  }
 }

@@ -3,6 +3,8 @@
 #include <vector>
 #include <map>
 using namespace std;
+#define SEPARATOR 230
+#define SBYTE 8
 typedef unsigned char uchar;
 struct node{
   int freq;
@@ -22,4 +24,5 @@ void getEncodingR(node * root , node * parent , map<uchar,string> & mapa);
 void traversalTree(node * root);
 node * decodingTree( vector<uchar> & s, int &offset);
 vector<uchar> decodingText(vector<uchar> & s, map<string,uchar> tabla, int offset);
+void setEncodingToText(vector<uchar> & toMemory ,  map<uchar,string> & tabla, vector<uchar> & encoding);
 #endif
