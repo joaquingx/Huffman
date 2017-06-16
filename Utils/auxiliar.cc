@@ -86,7 +86,7 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
   char buffer[MAXN];
   FILE * pFile ;
   memset(freq , 0 , sizeof freq);
-  pFile = fopen(path, "r");
+  pFile = fopen(path, "rb");
   if(pFile == NULL ) perror("Error opening file\n");
   else
     {
