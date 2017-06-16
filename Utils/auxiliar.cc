@@ -90,15 +90,16 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
   if(pFile == NULL ) perror("Error opening file\n");
   else
     {
-      for(int i = 0 ; !feof(pFile) ; ++i)
+      while(1)
         {
-          memset(buffer,0,sizeof buffer);
-          if ( fgets (buffer , MAXN , pFile) == NULL ) break;
-          for(int j = 0 ; buffer[j] != 0 ; ++j)
+          int x = getc(pFile);
+          if(x != -1)
             {
-              s.push_back(uchar(buffer[j]));
-              ++freq[int(uchar(buffer[j]))];
+              s.push_back(uchar(x));
+              ++freq[int(uchar(x))];
             }
+          else
+            break;
         }
       fclose (pFile);
     }
