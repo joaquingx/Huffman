@@ -1,5 +1,5 @@
 # Huffman Encoding and Decoding
-![Bugs](https://img.shields.io/badge/Bugs-Present-red.svg)
+![Bugs](https://img.shields.io/badge/Bugs-???-green.svg)
 
 An implementation in C++ that use the [Huffman Algorithm](https://en.wikipedia.org/wiki/Huffman_coding) for compress and decompress only for **ASCII TEXTS**.
 ### How to build
