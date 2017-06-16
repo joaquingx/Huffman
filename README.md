@@ -15,7 +15,7 @@ An implementation in C++ that use the [Huffman Algorithm](https://en.wikipedia.o
 ### How To Use
 
 ```sh
-  $ ./Huffman [-c/-d] [Origin Path] [Dest Path]
+  $ ./Huffman -c/-d Input file [Output file]
 ```
 Use *-c* for compression and *-d* for decompression. 
 
