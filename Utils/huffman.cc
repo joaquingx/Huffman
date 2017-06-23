@@ -143,7 +143,8 @@ void generatingTree(node *& actual, map<node * , node * > & parent, map<node * ,
 
 node * decodingTree( vector<uchar> & s, int &offset)
 {
-  int cc=0;
+  int cc=1;
+  int SEPARATOR = s[0];
   for(; cc < s.size() and int(s[cc]) != SEPARATOR ; ++cc);
   uchar nuevaLetra=0;
   int byteCounter=7, totalSize = SBYTE * cc, actualSize=0;
@@ -153,7 +154,7 @@ node * decodingTree( vector<uchar> & s, int &offset)
   map<node * , int> mapa;
   map<node * , node * > parent;
   parent[root] = 0;
-  for(int i = 0; i < s.size() and int(s[i]) != SEPARATOR ; ++i)
+  for(int i = 1; i < s.size() and int(s[i]) != SEPARATOR ; ++i)
     {
       offset=i;
       for(int j = SBYTE-1; j >= 0; --j )

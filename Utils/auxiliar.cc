@@ -72,7 +72,7 @@ void printBitxBit(vector<uchar> & s)
 void saveCompression(vector<uchar> & s, char * dest)
 {
   FILE * saveFile;
-  saveFile = fopen(dest,"w");
+  saveFile = fopen(dest,"wb");
   for(int i = 0 ;i < s.size() ; ++i)
     {
       // cout << int(s[i]) << " ";
@@ -109,7 +109,7 @@ void openFileDecompression(vector< uchar > & s, char * path)
 {
   char buffer[MAXN];
   FILE * pFile ;
-  pFile = fopen("compress.txt", "rb");
+  pFile = fopen(path, "rb");
   if(pFile == NULL ) perror("Error opening file\n");
   else
     {
@@ -171,7 +171,7 @@ bool getOptions(char **& options , char * argv[])
   else if(argv[3]== NULL and argv[2] != NULL and argv[1] != NULL)
     {
       if(strcmp(argv[1],"-c") == 0)
-        strcpy(options[2],"compress.txt");
+        strcpy(options[2],"compress.huffman");
       else
         strcpy(options[2],"decompress.txt");
       for(int i = 0 ;i < 2 ; ++i)
@@ -193,5 +193,18 @@ void printInMemory(vector<uchar> & toMemory)
 {
   cout << "In Memory:\n";
   for(int i = 0 ;i < toMemory.size() ; ++i)
-    cout << toMemory[i] << " ";
+    cout << int(toMemory[i]) << " ";
+}
+
+uchar getSeparator(vector<uchar> & toMemory)
+{
+  int exist[256];
+  memset(exist, 0 ,sizeof exist);
+  for(int i = 0 ; i < toMemory.size() ; ++i)
+    {
+      ++exist[int(toMemory[i])];
+    }
+  for(int j = 1 ; j < 256 ; ++j)
+    if(exist[j] == 0)
+      return uchar(j);
 }

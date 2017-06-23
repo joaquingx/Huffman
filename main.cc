@@ -66,7 +66,11 @@ int main(int argc, char * argv[])
       node * root = buildingTree(nodeQueue);
       vector<uchar> encoding = getTree(root);
       completeByte(encoding);
-      writeByte(uchar(SEPARATOR),encoding);
+      // cout << int(getSeparator(encoding)) << "<---\n";
+      uchar separator = getSeparator(encoding);
+      writeByte(separator,encoding);
+      encoding.insert(encoding.begin(),separator);
+      // printInMemory(encoding);
       tabla = getEncoding(root);
       setEncodingToText(toMemory ,tabla, encoding);
       completeByte(encoding);
@@ -76,10 +80,12 @@ int main(int argc, char * argv[])
     {
       int offset=0;
       openFileDecompression(toMemory,options[1]);
+      // printInMemory(toMemory);
       node * root = decodingTree(toMemory, offset);
       tabla = getEncoding(root);
       map<string,uchar> nTabla = inverseTable(tabla);
       vector<uchar> decoding = decodingText(toMemory,nTabla,offset+1);
+      // printInMemory(decoding);
       saveCompression(decoding,options[2]);
     }
   if(argv[4] != NULL and (strcmp("-v",argv[4])==0))
