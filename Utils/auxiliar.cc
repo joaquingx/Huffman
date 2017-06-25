@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "auxiliar.h"
-#define MAXN 10000
+#include "huffman.h"
+#define MAXN 1000
 using namespace std;
 typedef unsigned char uchar;
 uchar acc = 0;
@@ -61,12 +62,13 @@ void completeByte(vector<uchar> &s)
 
 void printBitxBit(vector<uchar> & s)
 {
+  cout << "Binary Representation:\n";
   for(int i = 0 ;i < s.size() ; ++i)
     {
       for(int j = 7 ; j >= 0;--j)
         cout << ((s[i]>>j) & 1) << " ";
     }
-  cout << "\n";
+  cout << "\n\n";
 }
 
 void saveCompression(vector<uchar> & s, char * dest)
@@ -81,11 +83,9 @@ void saveCompression(vector<uchar> & s, char * dest)
   fclose(saveFile);
 }
 
-void openFileCompression(vector< uchar > & s, int *freq , char * path)
+void openFileCompression(vector< uchar > & s, vector<int> & freq , char * path)
 {
-  char buffer[MAXN];
   FILE * pFile ;
-  memset(freq , 0 , sizeof freq);
   pFile = fopen(path, "rb");
   if(pFile == NULL ) perror("Error opening file\n");
   else
@@ -107,7 +107,6 @@ void openFileCompression(vector< uchar > & s, int *freq , char * path)
 
 void openFileDecompression(vector< uchar > & s, char * path)
 {
-  char buffer[MAXN];
   FILE * pFile ;
   pFile = fopen(path, "rb");
   if(pFile == NULL ) perror("Error opening file\n");
@@ -125,6 +124,28 @@ void openFileDecompression(vector< uchar > & s, char * path)
     }
 }
 
+void printFile(char * path)
+{
+  FILE * pFile ;
+  pFile = fopen(path, "r");
+  if(pFile == NULL ) perror("Error opening file\n");
+  else
+    {
+      while(1)
+        {
+          int x = getc(pFile);
+          if(x != -1)
+            {
+              cout << char(x);
+            }
+          else
+            break;
+        }
+      fclose (pFile);
+    }
+  cout << "\n";
+}
+
 map<string,uchar> inverseTable(map<uchar,string> s)
 {
   map<string,uchar> nuevo;
@@ -135,24 +156,29 @@ map<string,uchar> inverseTable(map<uchar,string> s)
   return nuevo;
 }
 
-map<uchar,string> vMap;
-void verboseMap()
+map<uchar,string> verboseMap()
 {
+  map<uchar,string> vMap;
   for(int i = 0 ; i <= 255 ; ++i)
     {
-      vMap[uchar(i)] += "0x";
-      vMap[uchar(i)] += uchar(i);
+      vMap[uchar(i)] = uchar(i);
     }
   vMap[uchar(10)] = "ENT";
   vMap[uchar(32)] = "SPC";
+  return vMap;
 }
 
-void printTable(map<uchar, string> mapa)
+
+void printTable(map<uchar, string> mapa, vector<int> freq)
 {
-  verboseMap();
-  cout << "Conversion Table: \n";
+  map<uchar,string> vMap = verboseMap();
+  int acc=0;
+  for(int i = 0 ; i < freq.size() ; ++i)
+    acc+=freq[i];
+  cout << "Conversion Table [ Character| Redundancy | Representation ] : \n";
   for(auto it = mapa.begin() ; it != mapa.end() ; ++it)
-    cout << vMap[(it->first)] << ":" << (it->second) << "\n";
+    printf("%3s : %.5f %s\n",vMap[it->first].c_str(), float(freq[it->first])/float(acc),(it->second).c_str());
+  cout << "\n";
 }
 
 bool getOptions(char **& options , char * argv[])
@@ -170,7 +196,8 @@ bool getOptions(char **& options , char * argv[])
     }
   else if(argv[3]== NULL and argv[2] != NULL and argv[1] != NULL)
     {
-      if(strcmp(argv[1],"-c") == 0)
+      string nuevo(argv[1]);
+      if(nuevo.find("c") != string::npos )
         strcpy(options[2],"compress.huffman");
       else
         strcpy(options[2],"decompress.txt");
@@ -181,9 +208,8 @@ bool getOptions(char **& options , char * argv[])
     }
   else if(argv[1] == NULL or argv[2] == NULL or argv[3] == NULL)
     {
-      cout << "Usage:  ./Huffman  -c|-d input-file [output-file]\n";
-      cout << "-c : compress\n";
-      cout << "-d : decompress\n";
+      string pathMan = "../man.txt";
+      printFile((char*)pathMan.c_str());
       return 0;
     }
   return 1;
@@ -207,4 +233,74 @@ uchar getSeparator(vector<uchar> & toMemory)
   for(int j = 1 ; j < 256 ; ++j)
     if(exist[j] == 0)
       return uchar(j);
+}
+
+string getAllOptions(char * str)
+{
+  return string(str).substr(1);
+}
+
+
+void encode(vector<uchar> & toMemory, vector<uchar> & encoding, vector<int> & freq,
+            node * & root, map<uchar,string> & tabla, char * inputFile, char * outputFile, huffmanQueue & nodeQueue )
+{
+  openFileCompression(toMemory,freq,inputFile);
+  setNodesQueue(nodeQueue,freq);
+  root = buildingTree(nodeQueue);
+  encoding = getTree(root);
+  completeByte(encoding);
+  uchar separator = getSeparator(encoding);
+  writeByte(separator,encoding);
+  encoding.insert(encoding.begin(),separator);
+  tabla = getEncoding(root);
+  setEncodingToText(toMemory ,tabla, encoding);
+  completeByte(encoding);
+  saveCompression(encoding,outputFile);
+}
+
+void decode(vector<uchar> & toMemory, vector<uchar> & encoding, vector<int> & freq,
+            node * & root, map<uchar,string>&  tabla, char * inputFile, char * outputFile)
+{
+  int offset=0;
+  openFileDecompression(toMemory,inputFile);
+  root = decodingTree(toMemory, offset);
+  tabla = getEncoding(root);
+  map<string,uchar> nTabla = inverseTable(tabla);
+  encoding = decodingText(toMemory,nTabla,offset+1);
+  saveCompression(encoding,outputFile);
+}
+
+void setOptions(char **& options)
+{
+  vector<uchar> toMemory,encoding;
+  vector<int> freq(256,0);
+  node * root; // Huffman Tree.
+  string aOptions = getAllOptions(options[0]);
+  map<uchar,string> tabla,vMap;
+  huffmanQueue nodeQueue;
+  string pathHow = "../How.txt";
+  for(int i = 0 ;i < aOptions.size() ; ++i)
+    {
+      switch(aOptions[i])
+        {
+        case 'c':
+          encode(toMemory,encoding,freq,root,tabla,options[1],options[2],nodeQueue);
+          break;
+        case 'd':
+          decode(toMemory,encoding,freq,root,tabla,options[1],options[2]);
+          break;
+        case 't':
+          printTable(tabla,freq);
+          break;
+        case 'b':
+          printBitxBit(encoding);
+          break;
+        // case 'p':
+        //   printProgress();
+        //   break;
+        case 'h':
+          printFile((char*)pathHow.c_str());
+          break;
+        }
+    }
 }

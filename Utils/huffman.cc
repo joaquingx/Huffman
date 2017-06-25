@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#define MAXN 256
 using namespace std;
 typedef unsigned char uchar;
 
@@ -36,7 +37,7 @@ map<uchar, string> getEncoding(node * root)
   return mapa;
 }
 int cnt = 0;
-string actualString="00000000000000000000000000000000000000000000000000";
+string actualString="000000000000000000000000000000000000000000000000000000000000000";//xD
 void getEncodingR(node * root , node * parent , map<uchar,string> & mapa)
 {
   if(root != NULL)
@@ -217,4 +218,39 @@ void setEncodingToText(vector<uchar> & toMemory ,  map<uchar,string> & tabla, ve
     for(int l = 0 ; l < k.size() ; ++l)
       writeBit(int(k[l])-'0',encoding);
   }
+}
+
+void getFrequencies(vector<int> & freq, map<uchar,string> & vMap)
+{
+  cout << "Frequencies : \n";
+  for(int i = 0 ;i < freq.size() ; ++i)
+    if(freq[i] > 0)
+      cout << vMap[uchar(i)] << ":" << freq[i] << "\n";
+}
+
+void setNodesQueue(huffmanQueue & S, vector<int>  & freq)
+{
+  node * aux;
+  for(int  i = 0 ; i < MAXN ; ++i)
+    {
+      if(freq[i] > 0)
+        {
+          aux = new node (freq[i],uchar(i),true);
+          S.insert(aux);
+        }
+    }
+}
+
+node * buildingTree(huffmanQueue & S)
+{
+  while(S.size() > 1)
+    {
+      node * first = (*S.begin());
+      S.erase(S.begin());
+      node * second = (*S.begin());
+      S.erase(S.begin());
+      node * fusion = merge(first,second);
+      S.insert(fusion);
+    }
+  return (*S.begin());
 }

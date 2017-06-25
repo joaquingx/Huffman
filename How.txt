@@ -1,0 +1,11 @@
+For Writing:
+So for each node, starting at root:
+If leaf-node: Output 1-bit + N-bit character/byte
+If not leaf-node, output 0-bit. Then encode both child nodes (left first then right) the same way
+To read, do this:
+
+For Reading :
+If 1, then read N-bit character/byte, return new node around it with no children
+If bit was 0, decode left and right child-nodes the same way, and return new node around them with those children, but no value
+
+Based on : https://stackoverflow.com/questions/759707/efficient-way-of-storing-huffman-tree?answertab=votes#tab-top

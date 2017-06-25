@@ -1,20 +1,3 @@
-# Huffman Encoding and Decoding
-![Bugs](https://img.shields.io/badge/Bugs-Present-red.svg)
-
-An implementation in C++ that use the [Huffman Algorithm](https://en.wikipedia.org/wiki/Huffman_coding) for compress and decompress data.
-### How to build
-```sh
-  $ git clone https://github.com/joaquingx/Huffman-Encoding-Decoding.git
-  $ cd Huffman-Encoding-Decoding
-  $ mkdir build
-  $ cd build
-  $ cmake ..
-  $ make
-```
-
-### Usage
-
-```sh
 Usage:  ./Huffman OPTIONS input-file [output-file]
 
 OPTIONS
@@ -27,7 +10,7 @@ OPTIONS
         -b
                 Print the output in Binary Representation, Tree and Text Enconding.
         -h
-                Print how the tree is enconded.
+                Help for how the tree is enconded.
 
 EXAMPLES
         ./Huffman -ctb Text.txt
@@ -37,10 +20,3 @@ EXAMPLES
                   Decode the file compress.huffman to decompress.bmp .
         ./Huffman -cp Image.bmp EncodingImage.ll
                   Encode the file Image.bmp to EncodingImage.ll and shows the progress .
-
-  
-```
-
-
-
-
