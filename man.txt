@@ -13,10 +13,10 @@ OPTIONS
                 Print how the tree is enconded.
 
 EXAMPLES
-        ./Huffman -ctb Text.txt
+        ./Huffman -etb Text.txt
                   Encode the file Text.txt to compress.huffman, prints the conversion table
                   and the binary representation of the output .
         ./Huffman -d compress.huffman decompress.bmp
                   Decode the file compress.huffman to decompress.bmp .
-        ./Huffman -cp Image.bmp EncodingImage.ll
+        ./Huffman -ep Image.bmp EncodingImage.ll
                   Encode the file Image.bmp to EncodingImage.ll and shows the progress .

@@ -197,7 +197,7 @@ bool getOptions(char **& options , char * argv[])
   else if(argv[3]== NULL and argv[2] != NULL and argv[1] != NULL)
     {
       string nuevo(argv[1]);
-      if(nuevo.find("c") != string::npos )
+      if(nuevo.find("e") != string::npos )
         strcpy(options[2],"compress.huffman");
       else
         strcpy(options[2],"decompress.txt");
@@ -283,7 +283,7 @@ void setOptions(char **& options)
     {
       switch(aOptions[i])
         {
-        case 'c':
+        case 'e':
           encode(toMemory,encoding,freq,root,tabla,options[1],options[2],nodeQueue);
           break;
         case 'd':
