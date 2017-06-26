@@ -37,8 +37,6 @@ EXAMPLES
                   Decode the file compress.huffman to decompress.bmp .
         ./Huffman -cp Image.bmp EncodingImage.ll
                   Encode the file Image.bmp to EncodingImage.ll and shows the progress .
-
-  
 ```
 
 
