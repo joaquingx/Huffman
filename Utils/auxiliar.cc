@@ -159,7 +159,17 @@ map<string,uchar> inverseTable(map<uchar,string> s)
 map<uchar,string> verboseMap()
 {
   map<uchar,string> vMap;
-  for(int i = 0 ; i <= 255 ; ++i)
+  for(int i = 0 ; i < 33 ; ++i)
+    {
+      vMap[uchar(i)] = "#";
+      vMap[uchar(i)] += to_string(int(uchar(i)));
+    }
+  for(int i = 127 ; i < 256 ; ++i)
+    {
+      vMap[uchar(i)] = "#";
+      vMap[uchar(i)] += to_string(int(uchar(i)));
+    }
+  for(int i = 33 ; i < 127 ; ++i)
     {
       vMap[uchar(i)] = uchar(i);
     }
@@ -177,7 +187,9 @@ void printTable(map<uchar, string> mapa, vector<int> freq)
     acc+=freq[i];
   cout << "Conversion Table [ Character| Redundancy | Representation ] : \n";
   for(auto it = mapa.begin() ; it != mapa.end() ; ++it)
-    printf("%3s : %.5f %s\n",vMap[it->first].c_str(), float(freq[it->first])/float(acc),(it->second).c_str());
+    {
+      printf("%4s : %.5f %s\n",vMap[it->first].c_str(), float(freq[it->first])/float(acc),(it->second).c_str());
+    }
   cout << "\n";
 }
 
