@@ -3,6 +3,7 @@
 
 An implementation in C++ that use the [Huffman Algorithm](https://en.wikipedia.org/wiki/Huffman_coding) for compress and decompress data.
 ### How to build
+Follow this steps carefully!(because some paths are hardcoded)
 ```sh
   $ git clone https://github.com/joaquingx/Huffman-Encoding-Decoding.git
   $ cd Huffman-Encoding-Decoding
